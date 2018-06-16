@@ -62,7 +62,9 @@ class TaskHandler:
 
                 # choose the best task which we can get yet
                 lasting_tasks = self.choose_best_with_condition(task_list, self.team_velocity - count_velocity)
-                best_tasks_ids.append(lasting_tasks)
+
+                for task in lasting_tasks:
+                        best_tasks_ids.append(task)
 
                 return best_tasks_ids
             else:
@@ -88,6 +90,7 @@ class TaskHandler:
             points_left -= int(best_task['story_points'])
             other_ids.append(best_task['task_id'])
             task_list = self.delete_task(task_list, int(best_task['task_id']))
+
 
             # call again recursively
             self.choose_best_with_condition(task_list, points_left, other_ids)
