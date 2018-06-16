@@ -40,7 +40,7 @@ class TaskHandler:
         count_velocity = 0
         best_tasks_ids = []
 
-        while count_velocity < self.team_velocity:
+        while count_velocity < self.team_velocity and len(task_list) != 0:
             # before we start set best ratio to first task
 
             best_task = task_list[0]
@@ -57,6 +57,8 @@ class TaskHandler:
                 # deleting this task, because we can't use it anymore
                 task_list = self.delete_task(task_list, best_task['task_id'])
 
+                if len(task_list) == 0:
+                    return best_tasks_ids
                 # also we can't add
                 count_velocity -= int(best_task['story_points'])
 
@@ -64,7 +66,7 @@ class TaskHandler:
                 lasting_tasks = self.choose_best_with_condition(task_list, self.team_velocity - count_velocity)
 
                 for task in lasting_tasks:
-                        best_tasks_ids.append(task)
+                    best_tasks_ids.append(task)
 
                 return best_tasks_ids
             else:
@@ -72,6 +74,8 @@ class TaskHandler:
                 best_tasks_ids.append(best_task['task_id'])
                 # delete this task, because w used it
                 task_list = self.delete_task(task_list, best_task['task_id'])
+
+        return best_tasks_ids
 
     def choose_best_with_condition(self, task_list, points_left, other_ids=None):
         if other_ids is None:
@@ -91,6 +95,8 @@ class TaskHandler:
             other_ids.append(best_task['task_id'])
             task_list = self.delete_task(task_list, int(best_task['task_id']))
 
+            if task_list is None:
+                return other_ids
 
             # call again recursively
             self.choose_best_with_condition(task_list, points_left, other_ids)
