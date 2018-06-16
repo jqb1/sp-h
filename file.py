@@ -3,8 +3,8 @@ import csv
 
 class TaskHandler:
     def __init__(self, filename, team_velocity):
-        self.read_file(filename)
         self.team_velocity = team_velocity
+        self.read_file(filename)
 
     def read_file(self, filename):
         task_list = []
@@ -20,7 +20,8 @@ class TaskHandler:
                     row.update({'ratio': ratio})
                     task_list.append(row)
 
-            self.choose_best_tasks(task_list)
+            best_tasks = self.choose_best_tasks(task_list)
+            print(best_tasks)
         except IOError:
             print("Can't open the file! Did you type correct name?")
 
@@ -52,11 +53,17 @@ class TaskHandler:
 
                 # deleting this task, because we can't use it anymore
                 task_list = self.delete_task(task_list, best_task['task_id'])
-                # if exceeding don't add
+
+                # also we can't add
                 count_velocity -= best_task['ratio']
+
+                # choose the best task which we can get yet
                 lasting_tasks = self.choose_best_with_condition(task_list, self.team_velocity - count_velocity)
-                task_list.append(lasting_tasks)
+                best_tasks_ids.append(lasting_tasks)
+
+                return best_tasks_ids
             else:
+
                 best_tasks_ids.append(best_task['task_id'])
                 # delete this task, because w used it
                 task_list = self.delete_task(task_list, best_task['task_id'])
