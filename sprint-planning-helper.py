@@ -1,4 +1,5 @@
 import argparse
+from file_handler import FileHandler
 from task_handler import TaskHandler
 
 
@@ -6,13 +7,27 @@ from task_handler import TaskHandler
 def main():
     # parsing arguments passed when calling script
     parser = argparse.ArgumentParser(description="Choosing task file and max velocity")
-    parser.add_argument('file', help="type: -file filename if you want to pass your file", type=str)
-    parser.add_argument('velocity', help="1-easy, other-hard , default - easy", type=int)
+    parser.add_argument('file', help="type filename with tasks", type=str)
+    parser.add_argument('velocity', help="type velocity points of your team", type=int)
 
     arg = parser.parse_args()
 
     # pass a filename to TaskHandler class constructor
-    TaskHandler(arg.file, arg.velocity)
+    file = FileHandler()
+    task_list = file.read_file(arg.file)
+
+    task_handler = TaskHandler(arg.velocity)
+    # provide every task with KSP/storypoints ratio
+    task_list = task_handler.update_tasks_ratio(task_list)
+
+    for task in task_list:
+        print(task)
+
+    best_task_ids = task_handler.choose_best_tasks(task_list)
+
+    print("Best tasks available for you:")
+    task_str = ', '.join(best_task_ids)
+    print(task_str)
 
 
 main()

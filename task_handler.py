@@ -2,31 +2,14 @@ import csv
 
 
 class TaskHandler:
-    def __init__(self, filename, team_velocity):
+    def __init__(self, team_velocity):
         self.team_velocity = team_velocity
-        self.read_file(filename)
 
-    def read_file(self, filename):
-        task_list = []
-
-        try:
-            with open(filename, 'r') as f:
-                # read data from file
-                reader = csv.DictReader(f)
-
-                for row in reader:
-                    ratio = self.count_ratio(row['story_points'], row['KSP'])
-
-                    row.update({'ratio': ratio})
-                    task_list.append(row)
-
-            # for task in task_list:
-            #     print(task)
-
-            best_tasks = self.choose_best_tasks(task_list)
-            self.print_chosen_tasks(best_tasks)
-        except IOError:
-            print("Can't open the file! Did you type correct name?")
+    def update_tasks_ratio(self, task_list):
+        for task in task_list:
+            ratio = self.count_ratio(task['story_points'], task['KSP'])
+            task.update({'ratio': ratio})
+        return task_list
 
     @staticmethod
     def count_ratio(story_points, KSP):
@@ -57,7 +40,7 @@ class TaskHandler:
                 task_list = self.delete_task(task_list, best_task['task_id'])
 
                 # return if no more tasks available
-                if len(task_list) == 0:
+                if self.is_empty(task_list):
                     return best_tasks_ids
                 # also we can't add
                 count_velocity -= int(best_task['story_points'])
@@ -76,6 +59,13 @@ class TaskHandler:
                 task_list = self.delete_task(task_list, best_task['task_id'])
 
         return best_tasks_ids
+
+    @staticmethod
+    def is_empty(task_list):
+        if len(task_list) == 0:
+            return True
+        else:
+            return False
 
     def choose_best_with_condition(self, task_list, points_left, other_ids=None):
         if other_ids is None:
@@ -112,5 +102,6 @@ class TaskHandler:
 
     @staticmethod
     def print_chosen_tasks(chosen_tasks):
+        print("Best tasks you can choose:")
         out_str = ', '.join(chosen_tasks)
         print(out_str, end='\n')
