@@ -20,6 +20,9 @@ class TaskHandler:
                     row.update({'ratio': ratio})
                     task_list.append(row)
 
+            # for task in task_list:
+            #     print(task)
+
             best_tasks = self.choose_best_tasks(task_list)
             print(best_tasks)
         except IOError:
@@ -48,14 +51,14 @@ class TaskHandler:
                     best_task = task
 
             # when we have best available task,check if not exceeding team velocity
-            count_velocity += best_task['ratio']
+            count_velocity += int(best_task['story_points'])
             if count_velocity > self.team_velocity:
 
                 # deleting this task, because we can't use it anymore
                 task_list = self.delete_task(task_list, best_task['task_id'])
 
                 # also we can't add
-                count_velocity -= best_task['ratio']
+                count_velocity -= int(best_task['story_points'])
 
                 # choose the best task which we can get yet
                 lasting_tasks = self.choose_best_with_condition(task_list, self.team_velocity - count_velocity)
@@ -74,7 +77,7 @@ class TaskHandler:
 
         best_ratio = 0
         for task in task_list:
-            if task['story_points'] <= points_left and task['ratio'] > best_ratio:
+            if int(task['story_points']) <= points_left and float(task['ratio']) > best_ratio:
                 best_ratio = task['ratio']
                 best_task = task
 
@@ -82,15 +85,17 @@ class TaskHandler:
         if points_left == 0 or best_ratio == 0:
             return other_ids
         else:
-            points_left -= best_task['story_points']
+            points_left -= int(best_task['story_points'])
             other_ids.append(best_task['task_id'])
-            task_list = self.delete_task(task_list, best_task['task_id'])
+            task_list = self.delete_task(task_list, int(best_task['task_id']))
 
             # call again recursively
             self.choose_best_with_condition(task_list, points_left, other_ids)
 
     def delete_task(self, task_list, task_id):
+
         for task in task_list:
             if task['task_id'] == task_id:
                 task_list.remove(task)
+
                 return task_list
