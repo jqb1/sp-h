@@ -24,7 +24,7 @@ class TaskHandler:
             #     print(task)
 
             best_tasks = self.choose_best_tasks(task_list)
-            print(best_tasks)
+            self.print_chosen_tasks(best_tasks)
         except IOError:
             print("Can't open the file! Did you type correct name?")
 
@@ -42,7 +42,6 @@ class TaskHandler:
 
         while count_velocity < self.team_velocity and len(task_list) != 0:
             # before we start set best ratio to first task
-
             best_task = task_list[0]
 
             # find the best available task to take
@@ -57,6 +56,7 @@ class TaskHandler:
                 # deleting this task, because we can't use it anymore
                 task_list = self.delete_task(task_list, best_task['task_id'])
 
+                # return if no more tasks available
                 if len(task_list) == 0:
                     return best_tasks_ids
                 # also we can't add
@@ -101,10 +101,16 @@ class TaskHandler:
             # call again recursively
             self.choose_best_with_condition(task_list, points_left, other_ids)
 
-    def delete_task(self, task_list, task_id):
+    @staticmethod
+    def delete_task(task_list, task_id):
 
         for task in task_list:
             if task['task_id'] == task_id:
                 task_list.remove(task)
 
                 return task_list
+
+    @staticmethod
+    def print_chosen_tasks(chosen_tasks):
+        out_str = ', '.join(chosen_tasks)
+        print(out_str, end='\n')
