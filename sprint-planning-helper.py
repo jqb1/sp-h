@@ -16,15 +16,11 @@ def main():
     file = FileHandler()
     task_list = file.read_file(arg.file)
 
-    task_handler = TaskHandler(arg.velocity)
+    task_handler = TaskHandler()
     # provide every task with KSP/storypoints ratio
     task_list = task_handler.update_tasks_ratio(task_list)
 
-    for task in task_list:
-        print(task)
-
-    best_task_ids = task_handler.choose_best_tasks(task_list)
-
+    best_task_ids = task_handler.choose_best_tasks(task_list, arg.velocity, best_task_ids=[])
     print("Best tasks available for you:")
     task_str = ', '.join(best_task_ids)
     print(task_str)
