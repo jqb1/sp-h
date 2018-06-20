@@ -24,7 +24,7 @@ class TaskHandler:
         for task in task_list:
 
             if int(task['story_points']) <= velocity_left and float(task['ratio']) > best_ratio:
-                best_ratio = int(task['ratio'])
+                best_ratio = float(task['ratio'])
                 best_task = task
 
         # if we used all points or didn't find any more matching tasks, we have nothing to do here
@@ -41,7 +41,6 @@ class TaskHandler:
             if len(task_list) == 0:
                 return best_task_ids
 
-            # return ids when we end
             return self.choose_best_tasks(task_list, velocity_left, best_task_ids)
 
     @staticmethod
