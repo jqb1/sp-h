@@ -20,7 +20,8 @@ def main():
     # provide every task with KSP/storypoints ratio
     task_list = task_handler.update_tasks_ratio(task_list)
 
-    best_task_ids = task_handler.choose_best_tasks(task_list, arg.velocity, best_task_ids=[])
+    best_tasks = task_handler.choose_best_tasks(task_list, arg.velocity, best_tasks=[])
+    best_task_ids = [task['task_id'] for task in best_tasks]
     print("Best tasks available for you:")
     task_str = ', '.join(best_task_ids)
     print(task_str)
