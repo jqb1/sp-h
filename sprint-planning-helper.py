@@ -27,4 +27,5 @@ def main():
     print(task_str)
 
 
-main()
+if __name__ == '__main__':
+    main()
