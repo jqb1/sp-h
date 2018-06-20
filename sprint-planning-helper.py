@@ -22,6 +22,7 @@ def main():
 
     best_tasks = task_handler.choose_best_tasks(task_list, arg.velocity, best_tasks=[])
     best_task_ids = [task['task_id'] for task in best_tasks]
+
     print("Best tasks available for you:")
     task_str = ', '.join(best_task_ids)
     print(task_str)
